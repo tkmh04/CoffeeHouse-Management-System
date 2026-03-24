@@ -15,6 +15,8 @@ import DTO.TaiKhoanDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.event.*;
 import java.sql.SQLException;
 import GUI.ThongKe.ThongKe;
@@ -51,17 +53,26 @@ public class Main extends JFrame{
     "img/nl.png",
 };
 
-    Color MainColor = new Color(250,250,250);
-    final Color PanelDefault = new Color(250, 250, 250);//trắng
-    final Color PanelHover = new Color(250, 50, 100);//hồng đậm
-    final Color PanelClick = new Color(250, 10, 100);//hồng
+    // Professional color scheme - Pink gradient
+    Color MainColor = new Color(248, 248, 252);
+    final Color TaskbarBg = new Color(255, 182, 193);  // Light pink
+    final Color TextPrimary = new Color(90, 90, 90);
+    final Color TextSecondary = new Color(160, 160, 160);
+    final Color PanelDefault = new Color(248, 248, 252);
+    final Color PanelHover = new Color(255, 160, 190);  // Pink on hover
+    final Color PanelClick = new Color(255, 105, 180);  // Hot pink when clicked
 
+    // Taskbar specific settings
+    final int TASKBAR_WIDTH = 280;
+    final int MENU_ITEM_HEIGHT = 55;
+    final int MENU_ITEM_WIDTH = 240;
 
     TaiKhoanBUS tkBUS = new TaiKhoanBUS();
     
     String tenTaiKhoan;
     int idQuyen;
     ArrayList<String> danhSachChucNang;
+    Map<String, String> mapChucNangCard = new HashMap<>(); // Map function name -> card name
     
     public Main(String tenTaiKhoan, int idQuyen){
         this.tenTaiKhoan = tenTaiKhoan;
@@ -71,78 +82,181 @@ public class Main extends JFrame{
 
     
     void initComonent(){
-        
-        
         this.setSize(new Dimension(1280, 900));
         this.setForeground(MainColor);
+        this.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.setTitle("Cửa hàng Trà Sữa Không Tên");
         Image icon = Toolkit.getDefaultToolkit().getImage("img/TS.png");
         this.setIconImage(icon);
         
-        Main = new JPanel();
+        // Main panel with gradient background
+        Main = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // More balanced gradient
+                GradientPaint gradient = new GradientPaint(0, 0, new Color(252, 248, 250),
+                                                          getWidth(), getHeight(), new Color(248, 240, 245));
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
         Main.setLayout(new BorderLayout());
         
-        Taskbar = new JPanel();
-        Taskbar.setPreferredSize(new Dimension(220, getHeight()));
-        Taskbar.setBackground(Color.pink);
+        // Taskbar with improved styling
+        Taskbar = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Gradient background for taskbar
+                GradientPaint gradient = new GradientPaint(0, 0, new Color(255, 190, 200),
+                                                          getWidth(), getHeight(), new Color(255, 160, 185));
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+                
+                // Right border shadow
+                g2d.setColor(new Color(0, 0, 0, 20));
+                g2d.fillRect(getWidth() - 2, 0, 2, getHeight());
+            }
+        };
+        Taskbar.setPreferredSize(new Dimension(TASKBAR_WIDTH, getHeight()));
+        Taskbar.setLayout(new BoxLayout(Taskbar, BoxLayout.Y_AXIS));
+        Taskbar.setBorder(BorderFactory.createEmptyBorder());
         
+        // User section with enhanced styling
+        JPanel userSection = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Subtle white background
+                g2d.setColor(new Color(255, 255, 255, 30));
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        userSection.setLayout(new BoxLayout(userSection, BoxLayout.Y_AXIS));
+        userSection.setOpaque(false);
+        userSection.setPreferredSize(new Dimension(250, 140));
+        userSection.setMaximumSize(new Dimension(250, 140));
+        userSection.setBorder(BorderFactory.createEmptyBorder(20, 0, 15, 0));
+        
+        // User icon with better styling
         JLabel lbIconUser = new JLabel();
-        lbIconUser.setPreferredSize(new Dimension(Taskbar.getPreferredSize().width, 100));
-        ImageIcon iconUser = new ImageIcon("img/user.png");
-        lbIconUser.setIcon(iconUser);
+        lbIconUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lbIconUser.setPreferredSize(new Dimension(80, 80));
+        lbIconUser.setMaximumSize(new Dimension(80, 80));
+        try {
+            ImageIcon iconUser = new ImageIcon("img/user.png");
+            Image scaledUserIcon = iconUser.getImage().getScaledInstance(70, 70, Image.SCALE_SMOOTH);
+            lbIconUser.setIcon(new ImageIcon(scaledUserIcon));
+        } catch (Exception e) {
+            lbIconUser.setText("👤");
+            lbIconUser.setFont(new Font("Segoe UI", Font.PLAIN, 40));
+        }
         lbIconUser.setHorizontalAlignment(JLabel.CENTER);
-        Taskbar.add(lbIconUser);
+        userSection.add(lbIconUser);
         
-        JPanel line = new JPanel();
-        line.setOpaque(true);
-        line.setBackground(new Color(250, 250, 250));
-	line.setPreferredSize(new Dimension(150, 2));
-	Taskbar.add(line);
-        
-        
+        // Username with better styling
         JLabel lbTextUser = new JLabel(tenTaiKhoan);
-        lbTextUser.setPreferredSize(new Dimension(Taskbar.getPreferredSize().width, 30));
-        lbTextUser.setHorizontalAlignment(JLabel.CENTER);
-        lbTextUser.setForeground(Color.WHITE);
-        Taskbar.add(lbTextUser);
+        lbTextUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lbTextUser.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lbTextUser.setForeground(new Color(100, 50, 80));
+        userSection.add(Box.createVerticalStrut(8));
+        userSection.add(lbTextUser);
+        
+        Taskbar.add(userSection);
+        
+        // Enhanced separator
+        JPanel separator = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Gradient separator
+                GradientPaint gradient = new GradientPaint(0, 0, new Color(255, 140, 170, 0),
+                                                          getWidth(), 0, new Color(220, 100, 150));
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        separator.setOpaque(false);
+        separator.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, 2));
+        separator.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, 2));
+        separator.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Taskbar.add(separator);
         
         danhSachChucNang = tkBUS.danhSachChucNang(idQuyen);
         ListTaskbar = new ArrayList<>();
         
-//        for (String cn : danhSachChucNang){
-//            JLabel lb = new JLabel(cn);
-//            ListTaskbar.add(lb);
-//            lb.setPreferredSize(new Dimension(Taskbar.getPreferredSize().width,50));
-//            lb.setOpaque(true);
-//            lb.setForeground(Color.PINK);
-//            lb.setBackground(MainColor);
-//            Font font = new Font("Segoe UI",Font.BOLD, 20);
-//            lb.setFont(font);
-//            lb.setHorizontalAlignment(JLabel.CENTER);
-//            lb.setVisible(true);
-//            Taskbar.add(lb,BorderLayout.CENTER);
-//        }
+        // Add spacing before menu items
+        Taskbar.add(Box.createVerticalStrut(20));
+        
+        // Create mapping between function names and card names
+        mapChucNangCard.put("menu", "1");
+        mapChucNangCard.put("phiếu nhập", "2");
+        mapChucNangCard.put("phiếu xuất", "3");
+        mapChucNangCard.put("nhân viên", "4");
+        mapChucNangCard.put("khách hàng", "5");
+        mapChucNangCard.put("thống kê", "6");
+        mapChucNangCard.put("tài khoản", "7");
+        mapChucNangCard.put("nguyên liệu", "8");
+        mapChucNangCard.put("phân quyền", "9");
+        mapChucNangCard.put("nhà cung cấp", "10");
+        mapChucNangCard.put("tạo phiếu nhập", "11");
         
         for (int i = 0; i < danhSachChucNang.size(); i++) {
-            ImageIcon pic = new ImageIcon(iconlb[i]); // Lấy đường dẫn đến biểu tượng từ mảng icon
-            JLabel lb = new JLabel(danhSachChucNang.get(i), pic, JLabel.LEFT); // Đặt biểu tượng bên trái
-            lb.setVerticalAlignment(JLabel.CENTER);
-            lb.setHorizontalAlignment(JLabel.CENTER);
-            lb.setIconTextGap(10);
-            lb.setPreferredSize(new Dimension(Taskbar.getPreferredSize().width, 50));
-            lb.setOpaque(true);
-            lb.setForeground(Color.PINK);
-            lb.setBackground(MainColor);
-            Font font = new Font("Segoe UI", Font.BOLD, 20);
-            lb.setFont(font);
-            lb.setVisible(true);
-            Taskbar.add(lb, BorderLayout.CENTER);
-            ListTaskbar.add(lb);
+            try {
+                ImageIcon pic = new ImageIcon(iconlb[i]);
+                Image scaledImg = pic.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+                ImageIcon scaledIcon = new ImageIcon(scaledImg);
+                
+                JLabel lb = new JLabel(danhSachChucNang.get(i), scaledIcon, JLabel.CENTER);
+                lb.setVerticalAlignment(JLabel.CENTER);
+                lb.setHorizontalAlignment(JLabel.CENTER);
+                lb.setHorizontalTextPosition(JLabel.CENTER);
+                lb.setVerticalTextPosition(JLabel.BOTTOM);
+                lb.setIconTextGap(5);
+                lb.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+                lb.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+                lb.setAlignmentX(Component.CENTER_ALIGNMENT);
+                lb.setOpaque(true);
+                lb.setForeground(TextSecondary);
+                lb.setBackground(PanelDefault);
+                lb.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+                lb.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+                lb.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Taskbar.add(lb);
+                ListTaskbar.add(lb);
+            } catch (Exception e) {
+                // Handle icon loading error
+                JLabel lb = new JLabel(danhSachChucNang.get(i), JLabel.CENTER);
+                lb.setVerticalAlignment(JLabel.CENTER);
+                lb.setHorizontalAlignment(JLabel.CENTER);
+                lb.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+                lb.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+                lb.setAlignmentX(Component.CENTER_ALIGNMENT);
+                lb.setOpaque(true);
+                lb.setForeground(TextSecondary);
+                lb.setBackground(PanelDefault);
+                lb.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
+                lb.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+                lb.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                Taskbar.add(lb);
+                ListTaskbar.add(lb);
             }
-
-
-    
+        }
         
         pnCard = new JPanel(cardMenu);
         pnNhanVien = new JPanel();
@@ -206,26 +320,89 @@ public class Main extends JFrame{
         pnNguyenLieu.setLayout(new BorderLayout());
         pnNguyenLieu.add(nL);
         
-        Main.add(pnCard);////trung tâm, phía bắc, phía nam, phía đông và phía tây        
+        Main.add(pnCard);
         add(Main);
         
+        // Add spacing before logout button
+        Taskbar.add(Box.createVerticalGlue());
+        
+        // Enhanced logout button with better styling
         JButton Logout = new JButton("Đăng xuất");
+        Logout.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+        Logout.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+        Logout.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Logout.setBackground(new Color(220, 100, 150));
+        Logout.setForeground(Color.WHITE);
+        Logout.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        Logout.setOpaque(true);
+        Logout.setFocusPainted(false);
+        Logout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        Logout.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        
+        // Enhanced hover effect
+        Logout.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                Logout.setBackground(new Color(255, 140, 175));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                Logout.setBackground(new Color(220, 100, 150));
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Logout.setBackground(new Color(200, 80, 130));
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                Logout.setBackground(new Color(255, 140, 175));
+            }
+        });
+        
         Logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try { /////try-catch
-                dispose();
-                Login login = new Login();
-                login.setVisible(true);
+                try {
+                    dispose();
+                    Login login = new Login();
+                    login.setVisible(true);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Lỗi đăng xuất");
                 }
             }
-        });    
-        Taskbar.add(Logout);
+        });
+        
+        Taskbar.add(Box.createVerticalStrut(15));
+        JPanel logoutPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Subtle background
+                g2d.setColor(new Color(255, 255, 255, 15));
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        logoutPanel.setOpaque(false);
+        logoutPanel.setMaximumSize(new Dimension(TASKBAR_WIDTH, MENU_ITEM_HEIGHT + 20));
+        logoutPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 15, 0));
+        logoutPanel.setLayout(new BoxLayout(logoutPanel, BoxLayout.X_AXIS));
+        logoutPanel.add(Box.createHorizontalGlue());
+        logoutPanel.add(Logout);
+        logoutPanel.add(Box.createHorizontalGlue());
+        Taskbar.add(logoutPanel);
                
         JScrollPane scrollMenu = new JScrollPane(Taskbar, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    Main.add(scrollMenu, BorderLayout.WEST);
+        scrollMenu.setBorder(null);
+        scrollMenu.setOpaque(false);
+        scrollMenu.getViewport().setOpaque(false);
+        scrollMenu.getVerticalScrollBar().setUnitIncrement(10);
+        Main.add(scrollMenu, BorderLayout.WEST);
         
         Mouse();
     }
@@ -234,57 +411,39 @@ public class Main extends JFrame{
             lb.addMouseListener(new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    // Reset all to default
                     for (JLabel lbDisable : ListTaskbar) {
                         lbDisable.setBackground(PanelDefault);
-                        lb.setForeground(Color.pink);
+                        lbDisable.setForeground(TextSecondary);
                     }
+                    // Set clicked to active with smooth transition
                     lb.setBackground(PanelClick);
+                    lb.setForeground(Color.WHITE);
                     
-                    String cardName = "";
-                    if (lb.getText().equals("Menu")) {
-                    cardName = "1";
-                    } else if (lb.getText().equals("Phiếu nhập")) {
-                        cardName = "2";
-                    } else if (lb.getText().equals("Phiếu xuất")) {
-                        cardName = "3";
-                    } else if (lb.getText().equals("Nhân viên")) {
-                        cardName = "4";
-                    } 
-                    else if (lb.getText().equals("Khách hàng")) {
-                        cardName = "5";
-                    } 
-                    else if (lb.getText().equals("Thống kê")) {
-                        cardName = "6";
-                    } else if (lb.getText().equals("Tài khoản")) {
-                        cardName = "7";
-                    } else if (lb.getText().equals("Nguyên liệu")) {
-                        cardName = "8";
-                    }
-                    else if (lb.getText().equals("Phân quyền")) {
-                        cardName = "9";
-                    }
-                    else if (lb.getText().equals("Nhà Cung Cấp")) {
-                        cardName = "10";
-                    }
-                    else if (lb.getText().equals("Tạo Phiếu Nhập")) {
-                        cardName = "11";
-                    }
+                    String labelText = lb.getText().toLowerCase().trim();
+                    String cardName = mapChucNangCard.getOrDefault(labelText, "1");
                     cardMenu.show(pnCard, cardName);
                 }
 
                 @Override
                 public void mousePressed(MouseEvent e) {
+                    if (lb.getBackground().equals(PanelClick)) {
+                        lb.setBackground(new Color(240, 100, 170));
+                    }
                 }
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
+                    if (lb.getBackground().equals(new Color(240, 100, 170))) {
+                        lb.setBackground(PanelClick);
+                    }
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     if (lb.getBackground().equals(PanelDefault)) {
                         lb.setBackground(PanelHover);
-                        lb.setForeground(MainColor);
+                        lb.setForeground(Color.WHITE);
                     }
                 }
 
@@ -292,7 +451,7 @@ public class Main extends JFrame{
                 public void mouseExited(MouseEvent e) {
                     if (lb.getBackground().equals(PanelHover)) {
                         lb.setBackground(PanelDefault);
-                        lb.setForeground(Color.PINK);
+                        lb.setForeground(TextSecondary);
                     }
                 }
             });
