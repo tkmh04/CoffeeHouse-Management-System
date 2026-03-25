@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th5 19, 2024 lúc 05:50 PM
+-- Thời gian đã tạo: Th3 25, 2026 lúc 12:48 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.0.30
 
@@ -47,6 +47,14 @@ CREATE TABLE `chitietphieunhap` (
   `priceNL` int(11) DEFAULT NULL,
   `soLuong` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `chitietphieunhap`
+--
+
+INSERT INTO `chitietphieunhap` (`idNL`, `idPN`, `priceNL`, `soLuong`) VALUES
+(1, 1, 1000, 1),
+(2, 1, 1000, 2);
 
 -- --------------------------------------------------------
 
@@ -104,7 +112,21 @@ INSERT INTO `chitietquyen` (`idQuyen`, `maCn`, `HanhDong`) VALUES
 (1, 8, 'Thêm'),
 (1, 8, 'Tìm kiếm'),
 (1, 8, 'Xem'),
-(1, 8, 'Xoá');
+(1, 8, 'Xoá'),
+(1, 9, 'Sửa'),
+(1, 9, 'Thêm'),
+(1, 9, 'Tìm kiếm'),
+(1, 9, 'Xem'),
+(1, 9, 'Xoá'),
+(2, 1, 'Xem'),
+(2, 2, 'Xem'),
+(2, 3, 'Xem'),
+(2, 4, 'Xem'),
+(2, 5, 'Xem'),
+(2, 6, 'Xem'),
+(2, 7, 'Xem'),
+(2, 8, 'Xem'),
+(2, 9, 'Xem');
 
 -- --------------------------------------------------------
 
@@ -242,10 +264,12 @@ CREATE TABLE `khach_hang` (
 --
 
 INSERT INTO `khach_hang` (`MAKH`, `TENKH`, `SDT`, `DIACHI`, `LOAITHANHVIEN`, `NGAYTHAMGIA`) VALUES
-(1, 'Hà Trọng Nghĩa', '0921465660', 'dsakdnas', 'A', NULL),
-(3, 'Bắc', '0832132441', 'jsdj', 'B', NULL),
-(4, 'Nhân', '0998832993', 'jj', 'C', NULL),
-(5, 'Thi', '0932421451', 'dsf', 'F', NULL);
+(7, 'Lưu Thị Thìn', '092', 'abc', '', NULL),
+(8, 'Nguyễn Hữu Thành', '0992', 'abc', '', NULL),
+(9, 'Đào Nguyễn Văn Quý', '0192', 'Quận 1', '', NULL),
+(10, 'Phùng Tiến Trung', '03992', '3333', '', NULL),
+(11, 'Hà Nghĩa', '09283', 'Quận 5', '', NULL),
+(12, 'Hoài Bắc', '099', 'Quận 5', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -351,9 +375,8 @@ CREATE TABLE `nhanvien` (
 --
 
 INSERT INTO `nhanvien` (`idNv`, `nameNv`, `dateOfBirthNv`, `sexualNv`, `phoneNumbNv`, `addressNv`) VALUES
-(1, 'Hà Trọng Nghĩa', '2004-08-05', 'Nam', '0921465660', '16/9/13 Quận 12 TpHCM'),
-(2, 'Nguyễn Như Hoài Bắc', '2004-05-22', 'Nam', '0359698104', '766/18 Lạc Long Quân,p9,Q.Tân Bình,tp.Hồ Chí Minh'),
-(3, 'Hoàng Minh Phúc', '2004-08-19', 'Nam', '0921432132', '22 Âu Cơ,P99 ,Q.Tân Bình, TpHCM');
+(4, 'Minh Thi', '02/03/2000', 'Nữ', '0123', '0123'),
+(5, 'Hoàng Luân', '01/02/2005', 'Nam', '090', 'AB12');
 
 -- --------------------------------------------------------
 
@@ -371,7 +394,8 @@ CREATE TABLE `phanquyen` (
 --
 
 INSERT INTO `phanquyen` (`idQuyen`, `tenQuyen`) VALUES
-(1, 'Admin');
+(1, 'Admin'),
+(2, 'Test');
 
 -- --------------------------------------------------------
 
@@ -386,6 +410,13 @@ CREATE TABLE `phieunhap` (
   `timeNhap` datetime DEFAULT NULL,
   `Total` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `phieunhap`
+--
+
+INSERT INTO `phieunhap` (`idPN`, `idNv`, `idNcc`, `timeNhap`, `Total`) VALUES
+(1, 1, 2, '2025-11-02 00:00:00', 3000);
 
 -- --------------------------------------------------------
 
@@ -467,7 +498,8 @@ CREATE TABLE `taikhoan` (
 --
 
 INSERT INTO `taikhoan` (`idAccount`, `idNv`, `userName`, `passWord`, `idQuyen`, `status`) VALUES
-(1, 1, 'admin', 'admin', 1, 1);
+(1, 1, 'admin', '123', 1, 1),
+(2, 2, 'MyHang', '123', 2, 2);
 
 -- --------------------------------------------------------
 
@@ -600,7 +632,7 @@ ALTER TABLE `hoadon`
 -- AUTO_INCREMENT cho bảng `khach_hang`
 --
 ALTER TABLE `khach_hang`
-  MODIFY `MAKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `MAKH` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `loaisanpham`
@@ -624,13 +656,13 @@ ALTER TABLE `nhacungcap`
 -- AUTO_INCREMENT cho bảng `nhanvien`
 --
 ALTER TABLE `nhanvien`
-  MODIFY `idNv` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idNv` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `phieunhap`
 --
 ALTER TABLE `phieunhap`
-  MODIFY `idPN` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPN` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `rankmember`
@@ -648,7 +680,7 @@ ALTER TABLE `sanpham`
 -- AUTO_INCREMENT cho bảng `taikhoan`
 --
 ALTER TABLE `taikhoan`
-  MODIFY `idAccount` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idAccount` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `topping`
