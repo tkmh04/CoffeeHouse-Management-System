@@ -40,7 +40,7 @@ public class ToppingDAO implements interfaceDAO<ToppingDTO>{
        ArrayList<ToppingDTO> result =new ArrayList<ToppingDTO>();
         try 
         {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM topping";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             ResultSet rs = (ResultSet) pst.executeQuery();
@@ -78,7 +78,7 @@ public class ToppingDAO implements interfaceDAO<ToppingDTO>{
         ToppingDTO result = null;
         try 
         {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM topping WHERE idTopping=?";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             pst.setString(1, t);

@@ -19,7 +19,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
     public int ADD(NguyenlieuDTO t) {
         int result = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "INSERT INTO nguyenlieu (nameNl, unit, quant) VALUES (?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, t.getTenNL());
@@ -37,7 +37,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
     public int UPDATE(NguyenlieuDTO t) {
          int result = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "INSERT INTO nguyenlieu (nameNl, unit, quant) VALUES (?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, t.getTenNL());
@@ -55,7 +55,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
     public int DELETE(NguyenlieuDTO t) {
         int result = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "DELETE FROM nguyenlieu WHERE idNl = ?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, t.getIdNl());
@@ -68,7 +68,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
     }
     public void deleteById(int id) {
     try {
-        Connection con = JDBCUtil.getConnection();
+        Connection con = ConnectDataBaseDB.getConnection();
         String sql = "DELETE FROM nguyenlieu WHERE idNl = ?";
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setInt(1, id);
@@ -82,7 +82,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
          NguyenlieuDTO result = null;
         try 
         {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM topping WHERE idTopping=?";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             pst.setInt(1, id);
@@ -110,7 +110,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
         ArrayList<NguyenlieuDTO> result =new ArrayList<NguyenlieuDTO>();
         try 
         {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM nguyenlieu";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             ResultSet rs = (ResultSet) pst.executeQuery();
@@ -134,7 +134,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
     
    public void updateQuantity(int idSp, String size, int sl) {
     try {
-        Connection con = (Connection) JDBCUtil.getConnection();
+        Connection con = (Connection) ConnectDataBaseDB.getConnection();
         String sql1 = "SELECT idNL, quant FROM congthuc WHERE IdSp = ? AND Size = ?";
         PreparedStatement pstmt = (PreparedStatement) con.prepareStatement(sql1);
         pstmt.setInt(1, idSp);
@@ -159,7 +159,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
 }
  public void updateById(NguyenlieuDTO dto) {
     try {
-        Connection con = JDBCUtil.getConnection();
+        Connection con = ConnectDataBaseDB.getConnection();
         String sql = "UPDATE nguyenlieu SET nameNl = ?, unit = ?, quant = ? WHERE idNl = ?";
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setString(1, dto.getTenNL());
@@ -174,7 +174,7 @@ public class NguyenlieuDAO implements interfaceDAO<NguyenlieuDTO> {
 }
 public boolean isDuplicateName(String nameNL) {
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM nguyenlieu WHERE nameNl = ?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, nameNL);

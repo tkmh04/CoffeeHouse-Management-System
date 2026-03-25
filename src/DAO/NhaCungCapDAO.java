@@ -7,7 +7,7 @@ package DAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import DAO.JDBCUtil;
+import DAO.ConnectDataBaseDB;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import DTO.NhaCungCapDTO;
@@ -24,7 +24,7 @@ public class NhaCungCapDAO implements interfaceDAO<NhaCungCapDTO>{
     public int ADD(NhaCungCapDTO t) {
         int result = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "INSERT INTO `nhacungcap` (`idNcc`, `nameNcc`, `diachi`, `phoneNumbNcc`) VALUES (?,?,?,?)";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, t.getIdNcc());
@@ -44,7 +44,7 @@ public class NhaCungCapDAO implements interfaceDAO<NhaCungCapDTO>{
     public int UPDATE(NhaCungCapDTO t) {
         int result = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "UPDATE `nhacungcap` SET `nameNcc`=?,`diachi`=?,`phoneNumbNcc`=? WHERE `idNcc`= ?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, t.getTenNcc());
@@ -63,7 +63,7 @@ public class NhaCungCapDAO implements interfaceDAO<NhaCungCapDTO>{
     public int DELETE(NhaCungCapDTO t) {
         int result = 0;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "DELETE FROM `nhacungcap` WHERE `idNcc`=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, t.getIdNcc());
@@ -78,7 +78,7 @@ public class NhaCungCapDAO implements interfaceDAO<NhaCungCapDTO>{
     public NhaCungCapDTO selectById(String t) {
         NhaCungCapDTO result = null;
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM `nhacungcap` WHERE `idNcc`=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, Integer.parseInt(t));
@@ -101,7 +101,7 @@ public class NhaCungCapDAO implements interfaceDAO<NhaCungCapDTO>{
     public ArrayList<NhaCungCapDTO> selectAll() {
         ArrayList<NhaCungCapDTO> result = new ArrayList<>();
         try {
-            Connection con = JDBCUtil.getConnection();
+            Connection con = ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM nhacungcap ";
             PreparedStatement pst = con.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -128,7 +128,7 @@ public class NhaCungCapDAO implements interfaceDAO<NhaCungCapDTO>{
     public int getAutoIncrement() {
         int result = -1;
         try {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT `AUTO_INCREMENT` FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'quanliquantrasua' AND   TABLE_NAME   = 'nhacungcap'";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             ResultSet rs2 = pst.executeQuery(sql);

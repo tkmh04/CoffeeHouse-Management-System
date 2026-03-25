@@ -174,7 +174,7 @@ public int tinhVonTuNamDenNam(int Nam) {
     
     public int demKhachHang(){
         int slkh = 0;
-        String sql = "SELECT COUNT(idKhMember) FROM khachhangmember";
+        String sql = "SELECT COUNT(MAKH) FROM khach_hang";
         try (PreparedStatement statement = conn.prepareStatement(sql)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {

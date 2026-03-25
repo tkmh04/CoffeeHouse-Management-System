@@ -36,8 +36,9 @@ public class Main extends JFrame{
     TaiKhoan taiKhoan;
     PhanQuyen phanQuyen;
     ThongKe thongKe;
-    Menu menu;
-    NguyenLieu nL;
+
+    NguyenlieuGUI NguyenLieu;
+    SanPhamGUI menu;
 
     String[] iconlb = {
     "img/milktea.png",
@@ -312,13 +313,13 @@ public class Main extends JFrame{
         pnThongKe.setLayout(new BorderLayout());
         pnThongKe.add(thongKe);
         
-        menu = new Menu();
+        menu = new SanPhamGUI();
         pnMenu.setLayout(new BorderLayout());
         pnMenu.add(menu);
         
-        nL = new NguyenLieu();
+        NguyenLieu = new NguyenlieuGUI();
         pnNguyenLieu.setLayout(new BorderLayout());
-        pnNguyenLieu.add(nL);
+        pnNguyenLieu.add(NguyenLieu);
         
         Main.add(pnCard);
         add(Main);

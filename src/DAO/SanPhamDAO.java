@@ -5,7 +5,7 @@
 package DAO;
 import java.util.ArrayList;
 import DTO.SanPhamDTO;
-import DAO.JDBCUtil;
+import DAO.ConnectDataBaseDB;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +37,7 @@ public class SanPhamDAO implements interfaceDAO<SanPhamDTO> {
         SanPhamDTO result = null;
         try 
         {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM sanpham WHERE idSp=?";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             pst.setString(1, t);
@@ -65,7 +65,7 @@ public class SanPhamDAO implements interfaceDAO<SanPhamDTO> {
         ArrayList<SanPhamDTO> result =new ArrayList<SanPhamDTO>();
         try 
         {
-            Connection con = (Connection) JDBCUtil.getConnection();
+            Connection con = (Connection) ConnectDataBaseDB.getConnection();
             String sql = "SELECT * FROM sanpham";
             PreparedStatement pst = (PreparedStatement) con.prepareStatement(sql);
             ResultSet rs = (ResultSet) pst.executeQuery();
@@ -103,7 +103,7 @@ public class SanPhamDAO implements interfaceDAO<SanPhamDTO> {
     }
     public double dbPriceSp(String idSp, String size) {
     double result = 0;
-    try (Connection con = JDBCUtil.getConnection();
+    try (Connection con = ConnectDataBaseDB.getConnection();
          PreparedStatement pst = con.prepareStatement("SELECT priceSp FROM giasanpham WHERE idSp = ? AND size = ?")) {
         pst.setString(1, idSp);
         pst.setString(2, size);
