@@ -1,2 +1,3 @@
 # CoffeeHouse-Management-System
-Các bước cài đặt 
+Mô hình 3 lớp trong Java Desktop (Swing)
+Các bước cài đặt
