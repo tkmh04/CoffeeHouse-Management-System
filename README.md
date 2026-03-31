@@ -83,3 +83,8 @@ ALTER TABLE chitietphieunhap
 
 - Cac cot khong doi ten nen khong anh huong den code dang dung ten cot cu.
 - PK kep (`idPN`, `idNL`) phu hop nghiep vu chi tiet phieu nhap.
+- Update project docs
+
+Add my plan
+ 
+Co-authored-by: github-copilot[bot] <46136950+github-copilot[bot]@users.noreply.github.com>
