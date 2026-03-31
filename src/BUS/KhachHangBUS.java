@@ -154,4 +154,52 @@ public class KhachHangBUS {
     public KhachHangDTO getKhachHangBySDT(String sdt) {
         return khachHangDAO.getKhachHangBySDT(sdt);
     }
+
+    public KhachHangDTO getKhachHangBySDTFlexible(String sdt) {
+        String normalizedInput = normalizePhone(sdt);
+        if (normalizedInput.isEmpty()) {
+            return null;
+        }
+
+        ArrayList<KhachHangDTO> dsKhachHang = layDanhSachKhachHang();
+        if (dsKhachHang == null) {
+            return null;
+        }
+
+        String alt = normalizedInput;
+        if (normalizedInput.startsWith("0") && normalizedInput.length() > 1) {
+            alt = "84" + normalizedInput.substring(1);
+        } else if (normalizedInput.startsWith("84") && normalizedInput.length() > 2) {
+            alt = "0" + normalizedInput.substring(2);
+        }
+
+        for (KhachHangDTO kh : dsKhachHang) {
+            String sdtDb = normalizePhone(kh.getsDT());
+            if (sdtDb.equals(normalizedInput) || sdtDb.equals(alt)) {
+                return kh;
+            }
+        }
+        return null;
+    }
+
+    public KhachHangDTO timKhachHangTheoSDTNhapVao(String sdt) {
+        return khachHangDAO.timKhachHangTheoSDTNhapVao(sdt);
+    }
+
+    private String normalizePhone(String phone) {
+        if (phone == null) {
+            return "";
+        }
+        StringBuilder digits = new StringBuilder();
+        for (char c : phone.trim().toCharArray()) {
+            if (Character.isDigit(c)) {
+                digits.append(c);
+            }
+        }
+        String normalized = digits.toString();
+        if (normalized.startsWith("84") && normalized.length() > 9) {
+            normalized = "0" + normalized.substring(2);
+        }
+        return normalized;
+    }
 }

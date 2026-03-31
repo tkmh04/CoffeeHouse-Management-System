@@ -4,7 +4,8 @@
  */
 package GUI;
 
-import BUS.PhieuNhapBUS;
+import BUS.PhieuXuatBUS;
+import DTO.HoaDonDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -35,19 +36,31 @@ public class PhieuXuat extends JPanel {
     private JTable tb;
     private DefaultTableModel model;
     private String[] column = {"ID Hóa Đơn", "ID Nhân Viên", "ID Khách Hàng", "Thời Gian", "Tổng Tiền"};
+    private final PhieuXuatBUS phieuXuatBUS = new PhieuXuatBUS();
 
     public PhieuXuat() {
         initComponent();
     }
 
     private void hienthi() {
-        // TODO: Gọi BUS layer để lấy dữ liệu từ database
-        model = new DefaultTableModel(column, 0);
-        // Dữ liệu demo tạm thời
-        Object[] row1 = {1, 1, 1, "2024-05-19 10:30", 50000};
-        Object[] row2 = {2, 2, 3, "2024-05-19 11:15", 75000};
-        model.addRow(row1);
-        model.addRow(row2);
+        model = new DefaultTableModel(column, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
+
+        ArrayList<HoaDonDTO> dsHoaDon = phieuXuatBUS.layDanhSachHoaDon();
+        for (HoaDonDTO hd : dsHoaDon) {
+            Object[] row = {
+                hd.getIdHd(),
+                hd.getIdNv(),
+                hd.getIdKhMember() == null ? "null" : hd.getIdKhMember(),
+                hd.getTimeHd(),
+                hd.getTotal()
+            };
+            model.addRow(row);
+        }
         tb.setModel(model);
     }
 
@@ -107,9 +120,17 @@ public class PhieuXuat extends JPanel {
 
     private void xoa(int rowIndex) {
         String idStr = model.getValueAt(rowIndex, 0).toString();
-        // TODO: Gọi BUS để xóa hóa đơn
-        JOptionPane.showMessageDialog(null, "Xóa hóa đơn thành công");
-        hienthi();
+        try {
+            int idHd = Integer.parseInt(idStr);
+            if (phieuXuatBUS.xoaHoaDon(idHd)) {
+                JOptionPane.showMessageDialog(null, "Xóa hóa đơn thành công");
+                hienthi();
+            } else {
+                JOptionPane.showMessageDialog(null, "Xóa hóa đơn thất bại");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "ID hóa đơn không hợp lệ");
+        }
     }
 
     private void sua() {
@@ -120,6 +141,7 @@ public class PhieuXuat extends JPanel {
             String idKhachHang = model.getValueAt(selectedRow, 2).toString();
             String thoiGian = model.getValueAt(selectedRow, 3).toString();
             String tongTien = model.getValueAt(selectedRow, 4).toString();
+            int idHoaDonInt = Integer.parseInt(idHoaDon);
 
             JFrame dialog = new JFrame("Sửa hóa đơn");
             dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -205,14 +227,19 @@ public class PhieuXuat extends JPanel {
             JPanel pDetail = new JPanel(new BorderLayout());
             pDetail.setBorder(new EmptyBorder(10, 20, 20, 20));
             
-            String[] columnDetail = {"ID Sản Phẩm", "ID Topping", "Số Lượng", "Giá"};
+            String[] columnDetail = {"ID Sản Phẩm", "Tên Sản Phẩm", "Topping", "Số Lượng", "Thành Tiền"};
             DefaultTableModel modelDetail = new DefaultTableModel(columnDetail, 0);
-            
-            // Dữ liệu demo cho chi tiết
-            Object[] row1 = {1, 1, 2, 50000};
-            Object[] row2 = {2, 2, 1, 25000};
-            modelDetail.addRow(row1);
-            modelDetail.addRow(row2);
+
+            ArrayList<DTO.ChiTietHoaDonDTO> dsChiTiet = phieuXuatBUS.layChiTietHoaDon(idHoaDonInt);
+            for (DTO.ChiTietHoaDonDTO ct : dsChiTiet) {
+                modelDetail.addRow(new Object[]{
+                    ct.getIdSp(),
+                    ct.getTenSp() == null ? "" : ct.getTenSp(),
+                    ct.getTenTopping() == null ? "Không" : ct.getTenTopping(),
+                    ct.getQuantity(),
+                    ct.getPrice()
+                });
+            }
             
             JTable tableDetail = new JTable(modelDetail);
             tableDetail.setFocusable(false);
@@ -258,14 +285,37 @@ public class PhieuXuat extends JPanel {
     }
 
     private void timkiem(String keyword, String value) {
-        // TODO: Gọi BUS layer để tìm kiếm
         if (value.isEmpty()) {
             hienthi();
         } else {
+            ArrayList<HoaDonDTO> dsHoaDon = phieuXuatBUS.layDanhSachHoaDon();
             model.setRowCount(0);
-            // Dữ liệu demo cho tìm kiếm
-            if (selectedBox.equals("Tất cả") || selectedBox.isEmpty()) {
-                hienthi();
+
+            for (HoaDonDTO hd : dsHoaDon) {
+                String idHd = String.valueOf(hd.getIdHd());
+                String idNv = String.valueOf(hd.getIdNv());
+                String idKh = hd.getIdKhMember() == null ? "null" : String.valueOf(hd.getIdKhMember());
+                String timeHd = String.valueOf(hd.getTimeHd());
+                String total = String.valueOf(hd.getTotal());
+
+                boolean match = false;
+                if (selectedBox.equals("Tất cả") || selectedBox.isEmpty()) {
+                    match = idHd.contains(value) || idNv.contains(value) || idKh.contains(value) || timeHd.contains(value) || total.contains(value);
+                } else if (selectedBox.equals("ID Hóa Đơn")) {
+                    match = idHd.contains(value);
+                } else if (selectedBox.equals("ID Nhân Viên")) {
+                    match = idNv.contains(value);
+                } else if (selectedBox.equals("ID Khách Hàng")) {
+                    match = idKh.contains(value);
+                } else if (selectedBox.equals("Thời Gian")) {
+                    match = timeHd.contains(value);
+                } else if (selectedBox.equals("Tổng Tiền")) {
+                    match = total.contains(value);
+                }
+
+                if (match) {
+                    model.addRow(new Object[]{hd.getIdHd(), hd.getIdNv(), idKh, hd.getTimeHd(), hd.getTotal()});
+                }
             }
         }
     }

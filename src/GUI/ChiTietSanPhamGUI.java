@@ -7,15 +7,14 @@ import DTO.SelectedTopping;
 import DTO.cartProduct;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -34,17 +33,13 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.text.html.CSS;
 import GUI.Component.ConfirmDialog;
 import java.awt.Component;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.border.Border;
 
 public class ChiTietSanPhamGUI extends JFrame {
-    private SanPhamGUI idsp = new SanPhamGUI() ;
     private SanPhamBUS idBUS = new SanPhamBUS();
     private DTO.SanPhamDTO idd = new DTO.SanPhamDTO();
     private NguyenlieuBUS nlBUS = new NguyenlieuBUS();
@@ -53,7 +48,7 @@ public class ChiTietSanPhamGUI extends JFrame {
     private JLabel totalBillLabel;
     private JLabel totalPriceLabel;
     private JPanel pnImage, pnAdd, pnBill, pnPay, pnRow1, pnRow2, pnRow3,pnCartProduct,pnCartProductHeader,totalPricePanel;
-    private static ArrayList<cartProduct> cartProducts= new ArrayList<>();;
+    private static ArrayList<cartProduct> cartProducts = new ArrayList<>();
     ArrayList<SelectedTopping> nametp;
     private JTextField quantityField;
     private JButton plusBtn, minusBtn;
@@ -62,32 +57,41 @@ public class ChiTietSanPhamGUI extends JFrame {
     private String selectedValue = "";
     private double totalPrice=0;
     private int selectedIndex = -1;
+    private final Color appBg = new Color(251, 244, 248);
+    private final Color cardBg = Color.WHITE;
+    private final Color softBorder = new Color(233, 212, 223);
+    private final Color accent = new Color(219, 88, 147);
+    private final Color accentHover = new Color(197, 72, 128);
+    private final Color textPrimary = new Color(90, 58, 76);
+    private final Color tableHeaderBg = new Color(244, 227, 236);
     
     public ChiTietSanPhamGUI(int id) {
-        if (cartProducts==null)
-            flag=false;        
-        else
-            flag=true;
+        flag = cartProducts != null && !cartProducts.isEmpty();
         initChiTietSanPhamGUI(id);
     }
 
     void initChiTietSanPhamGUI(int id) {
         
-        this.setSize(600, 750);
+        this.setSize(680, 760);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         String imageLink = idBUS.selectedById(String.valueOf(id)).getImgSp();
         ImageIcon img = new ImageIcon(getClass().getResource(imageLink));
         Image image = img.getImage();
-        Image scaledImg = image.getScaledInstance(120, 142, Image.SCALE_SMOOTH);
+        Image scaledImg = image.getScaledInstance(145, 170, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaledImg);
-         this.setTitle("GIỎ HÀNG");     
+         this.setTitle("Chi tiết chọn món");     
         JLabel lbImage = new JLabel(scaledIcon);
        
         
         idd = idBUS.selectedById(String.valueOf(id));
         String name = idd.getTenSp();
-        int idsp = idd.getIdSp();
+        final int selectedProductId = idd.getIdSp();
         JLabel lbAddDetails = new JLabel(name,JLabel.CENTER);
-        JLabel lbBill = new JLabel("Bill Information",JLabel.CENTER);
+        JLabel lbBill = new JLabel("Thông tin giỏ hàng",JLabel.CENTER);
+        lbAddDetails.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lbAddDetails.setForeground(textPrimary);
+        lbBill.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lbBill.setForeground(textPrimary);
 
         lbBill.setPreferredSize(new Dimension(600,50));
 
@@ -104,10 +108,12 @@ public class ChiTietSanPhamGUI extends JFrame {
         JRadioButton sizeM = new JRadioButton("M");
         sizeM.setSelected(true);
         sizeM.setFocusPainted(false);
+        sizeM.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
         sizeM.setVerticalTextPosition(JRadioButton.TOP);
         sizeM.setHorizontalTextPosition(JRadioButton.CENTER);
         JRadioButton sizeL = new JRadioButton("L");
+        sizeL.setFont(new Font("Segoe UI", Font.BOLD, 14));
         
         sizeL.setVerticalTextPosition(JRadioButton.TOP);
         sizeL.setFocusPainted(false);
@@ -115,9 +121,15 @@ public class ChiTietSanPhamGUI extends JFrame {
         JPanel ctn3 = new JPanel();
         
         JLabel quantityLbl= new JLabel("Số lượng :");
+        quantityLbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        quantityLbl.setForeground(textPrimary);
         quantityField =  new JTextField("1",5);
+        quantityField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         plusBtn = new JButton("+");
         plusBtn.setFocusPainted(false);
+        plusBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        plusBtn.setBackground(cardBg);
+        plusBtn.setBorder(BorderFactory.createLineBorder(softBorder));
          plusBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -129,6 +141,9 @@ public class ChiTietSanPhamGUI extends JFrame {
          
         minusBtn = new JButton("-");
         minusBtn.setFocusPainted(false);
+        minusBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        minusBtn.setBackground(cardBg);
+        minusBtn.setBorder(BorderFactory.createLineBorder(softBorder));
         minusBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -139,7 +154,8 @@ public class ChiTietSanPhamGUI extends JFrame {
                 }
             }
         });
-        ctn3.setBackground(Color.decode("#FEE0C3"));
+        ctn3.setBackground(cardBg);
+        ctn3.setBorder(BorderFactory.createEmptyBorder(6, 0, 6, 0));
         ctn3.add(quantityLbl,JPanel.CENTER_ALIGNMENT);
         ctn3.add(quantityField,JPanel.CENTER_ALIGNMENT);
         ctn3.add(plusBtn,JPanel.CENTER_ALIGNMENT);
@@ -153,27 +169,32 @@ public class ChiTietSanPhamGUI extends JFrame {
         pnSize.add(sizeM);
         pnSize.add(sizeL);
         
-        pnSize.setBackground(Color.decode("#FEE0C3"));
+        pnSize.setBackground(cardBg);
         JLabel toppingBtn = new JLabel("TOPPING",JLabel.CENTER);
         JLabel addBtn = new JLabel("THÊM",JLabel.CENTER);  
-        addBtn.setBackground(new Color(26,26,0));
+        addBtn.setBackground(accent);
         addBtn.setForeground(new Color(255,255,255));
         addBtn.setOpaque(true);
-        addBtn.setPreferredSize(new Dimension(70,35));
+        addBtn.setPreferredSize(new Dimension(92,36));
+        addBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        addBtn.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
         JPanel ctnAddBtn = new JPanel();
-        ctnAddBtn.setBackground(Color.decode("#FEE0C3"));
+        ctnAddBtn.setBackground(cardBg);
         ctnAddBtn.add(addBtn);
         JPanel ctnTopping = new JPanel();
-        toppingBtn.setBackground(Color.decode("#E16f05"));
+        toppingBtn.setBackground(new Color(248, 231, 239));
+        toppingBtn.setForeground(textPrimary);
+        toppingBtn.setFont(new Font("Segoe UI", Font.BOLD, 13));
         
         toppingBtn.setOpaque(true);
-        toppingBtn.setPreferredSize(new Dimension(70,35));
+        toppingBtn.setPreferredSize(new Dimension(92,35));
+        toppingBtn.setBorder(BorderFactory.createLineBorder(softBorder));
         
         ctnTopping.add(toppingBtn,JPanel.CENTER_ALIGNMENT);
-        ctnTopping.setBackground(Color.decode("#FEE0C3"));
+        ctnTopping.setBackground(cardBg);
         ctn1.add(pnSize);
         ctn1.add(ctnTopping);
-        ctn1.setBackground(Color.decode("#FEE0C3"));
+        ctn1.setBackground(cardBg);
         ctn1.setOpaque(true);
         
         
@@ -188,8 +209,12 @@ public class ChiTietSanPhamGUI extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         pnRow1.setLayout(new GridLayout(1, 2)); 
         pnRow1.setPreferredSize(new Dimension(600,250));
-        pnImage.setBorder(BorderFactory.createLineBorder(Color.black));
-        pnAdd.setBorder(BorderFactory.createLineBorder(Color.black));
+        pnImage.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(softBorder),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        pnAdd.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(softBorder),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         pnAdd.setOpaque(true);
         pnRow1.add(pnImage);
         pnRow1.add(pnAdd);
@@ -202,22 +227,25 @@ public class ChiTietSanPhamGUI extends JFrame {
         pnRow1.setOpaque(true);
 
         pnRow2 = new JPanel();
-        pnRow2.setPreferredSize(new Dimension(600,350));
+        pnRow2.setPreferredSize(new Dimension(640,350));
         pnBill = new JPanel(new BorderLayout());        
         pnCartProductHeader = new JPanel(new GridLayout(1,4));
         pnCartProduct = new JPanel(new GridLayout(0,4));
         JScrollPane scrollPane = new JScrollPane(pnCartProduct);
-        scrollPane.setPreferredSize(new Dimension(600, 310));
+        scrollPane.setPreferredSize(new Dimension(640, 250));
+        scrollPane.setBorder(BorderFactory.createLineBorder(softBorder));
+        scrollPane.getViewport().setBackground(cardBg);
+        pnCartProduct.setBackground(cardBg);
         
         pnCartProductHeader.setPreferredSize(new Dimension(600,40));
         JLabel header1= new JLabel("Sản phẩm",JLabel.CENTER);
         JLabel header2= new JLabel("Topping",JLabel.CENTER);
         JLabel header3= new JLabel("Giá",JLabel.CENTER);
         JLabel header4= new JLabel("Số lượng",JLabel.CENTER);
-        header1.setBorder(BorderFactory.createLineBorder(Color.black));
-        header2.setBorder(BorderFactory.createLineBorder(Color.black));
-        header3.setBorder(BorderFactory.createLineBorder(Color.black));
-        header4.setBorder(BorderFactory.createLineBorder(Color.black));
+        styleHeaderLabel(header1);
+        styleHeaderLabel(header2);
+        styleHeaderLabel(header3);
+        styleHeaderLabel(header4);
         
         
         pnCartProductHeader.add(header1);
@@ -275,7 +303,7 @@ public class ChiTietSanPhamGUI extends JFrame {
         }
              
                                
-        cartProduct product = new cartProduct(idsp,namepr, toppings, price, quantityy,SIZE);
+        cartProduct product = new cartProduct(selectedProductId, namepr, toppings, price, quantityy, SIZE);
        
                 
                 addCartProduct(product);
@@ -294,8 +322,7 @@ public class ChiTietSanPhamGUI extends JFrame {
         });
         pnBill.add(lbBill,BorderLayout.NORTH); 
         pnBill.add(pnCartProductHeader,BorderLayout.CENTER);
-        
-        pnBill.add(pnCartProduct,BorderLayout.SOUTH);
+        pnBill.add(scrollPane,BorderLayout.SOUTH);
         pnBill.revalidate();
         pnBill.repaint();       
         pnBill.setVisible(true);
@@ -310,7 +337,7 @@ public class ChiTietSanPhamGUI extends JFrame {
         pnPay.setVisible(true);
         pnPay.setOpaque(true);
         pnRow3.add(pnPay);
-        pnRow3.setBorder(BorderFactory.createLineBorder(Color.black));
+        pnRow3.setBorder(BorderFactory.createLineBorder(softBorder));
         pnRow3.setPreferredSize(new Dimension(600,100));
         pnRow3.setVisible(true);
         pnRow3.setOpaque(true);
@@ -322,15 +349,15 @@ public class ChiTietSanPhamGUI extends JFrame {
         this.add(pnRow2);
         this.add(pnRow3);
         this.setVisible(true);
-        this.getContentPane().setBackground(Color.decode("#FEE0C3"));
+        this.getContentPane().setBackground(appBg);
 
-        pnImage.setBackground(Color.decode("#FEE0C3"));
-        pnAdd.setBackground(Color.decode("#FEE0C3"));
-        pnRow1.setBackground(Color.decode("#FEE0C3"));
-        pnRow2.setBackground(Color.decode("#FEE0C3"));
-        pnRow3.setBackground(Color.decode("#FEE0C3"));
-        pnBill.setBackground(Color.decode("#FEE0C3"));
-        pnPay.setBackground(Color.decode("#FEE0C3"));
+        pnImage.setBackground(cardBg);
+        pnAdd.setBackground(cardBg);
+        pnRow1.setBackground(appBg);
+        pnRow2.setBackground(appBg);
+        pnRow3.setBackground(appBg);
+        pnBill.setBackground(appBg);
+        pnPay.setBackground(appBg);
         
         ctnTopping.setCursor(new Cursor(Cursor.HAND_CURSOR));
         addBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -359,16 +386,27 @@ public class ChiTietSanPhamGUI extends JFrame {
         pnPay.setPreferredSize(new Dimension(300,150));
         JPanel phoneNumberPanel = new JPanel();
         phoneNumberPanel.setPreferredSize(new Dimension(300,40));
-        phoneNumberPanel.add(new JLabel("Số điện thoại:",JLabel.CENTER));
+        JLabel lbPhone = new JLabel("Số điện thoại:",JLabel.CENTER);
+        lbPhone.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lbPhone.setForeground(textPrimary);
+        phoneNumberPanel.add(lbPhone);
         phoneNumberField = new JTextField(10); 
-        phoneNumberField.setBackground(Color.decode("#FEE0C3"));
+        phoneNumberField.setBackground(cardBg);
+        phoneNumberField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        phoneNumberField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(softBorder),
+            BorderFactory.createEmptyBorder(4, 8, 4, 8)));
         phoneNumberPanel.add(phoneNumberField,JPanel.CENTER_ALIGNMENT);
-        phoneNumberPanel.setBackground(Color.decode("#FEE0C3"));
+        phoneNumberPanel.setBackground(appBg);
         pnPay.add(phoneNumberPanel,JPanel.CENTER_ALIGNMENT); // Thêm phoneNumberPanel vào pnPay
 
         totalPricePanel = new JPanel(new FlowLayout());
-        totalPriceLabel = new JLabel("");
+        totalPriceLabel = new JLabel("0 VNĐ");
+        totalPriceLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        totalPriceLabel.setForeground(textPrimary);
         totalBillLabel = new JLabel("Tổng hóa đơn: ",JLabel.CENTER);
+        totalBillLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        totalBillLabel.setForeground(textPrimary);
         totalPricePanel.add(totalBillLabel);
         totalPricePanel.add(totalPriceLabel);
         totalPricePanel.setPreferredSize(new Dimension(300,70));
@@ -379,39 +417,69 @@ public class ChiTietSanPhamGUI extends JFrame {
         JPanel rightPanel = new JPanel(); 
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS)); 
         JButton paymentButton = new JButton("Thanh toán");
+        paymentButton.setFocusPainted(false);
+        paymentButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        paymentButton.setBackground(accent);
+        paymentButton.setForeground(Color.WHITE);
+        paymentButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        paymentButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         JPanel emptyPanel = new JPanel();
         emptyPanel.setPreferredSize(new Dimension(300, 15));
-        emptyPanel.setBackground(Color.decode("#FEE0C3"));
+        emptyPanel.setBackground(appBg);
         rightPanel.add(emptyPanel);
         JPanel paymentBtnPn = new JPanel();
-        paymentBtnPn.setBackground(Color.decode("#FEE0C3"));
+        paymentBtnPn.setBackground(appBg);
        
         paymentBtnPn.add(paymentButton);
         rightPanel.add(paymentBtnPn,JPanel.CENTER_ALIGNMENT);
-        rightPanel.setBackground(Color.decode("#FEE0C3"));
+        rightPanel.setBackground(appBg);
+
+        addBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                addBtn.setBackground(accentHover);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                addBtn.setBackground(accent);
+            }
+        });
+
+        paymentButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                paymentButton.setBackground(accentHover);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                paymentButton.setBackground(accent);
+            }
+        });
         
         paymentButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               ConfirmDialog confirmDialog = new ConfirmDialog(ChiTietSanPhamGUI.this, "Xác nhận thanh toán", "Bạn có chắc muốn thanh toán?");
-              confirmDialog.setVisible(true);
-               String phoneNumber = phoneNumberField.getText();
+                if (cartProducts == null || cartProducts.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Giỏ hàng đang trống!");
+                    return;
+                }
+
+                ConfirmDialog confirmDialog = new ConfirmDialog(ChiTietSanPhamGUI.this, "Xác nhận thanh toán", "Bạn có chắc muốn thanh toán?");
+                confirmDialog.setVisible(true);
             
-        if (confirmDialog.isConfirmed()) {
-            for (cartProduct product : cartProducts) {
-        int productId = product.getId(); 
-        String sizez = product.getSize(); 
-        int quantity = product.getQuant(); 
-               
-       
-        nlBUS.updateQuantity(productId, sizez, quantity);
-        
-    }
-            JOptionPane.showMessageDialog(null, "Đã thanh toán thành công!");
-            cartProducts.clear();
-            totalPrice = 0;
-            dispose();
-        }
+                if (confirmDialog.isConfirmed()) {
+                    for (cartProduct product : cartProducts) {
+                        int productId = product.getId();
+                        String sizez = product.getSize();
+                        int quantity = product.getQuant();
+                        nlBUS.updateQuantity(productId, sizez, quantity);
+                    }
+                    JOptionPane.showMessageDialog(null, "Đã thanh toán thành công!");
+                    resetOrderState();
+                    dispose();
+                }
             }
         });
        
@@ -423,6 +491,22 @@ public class ChiTietSanPhamGUI extends JFrame {
     
         this.setLocationRelativeTo(null);
     }
+
+    private void resetOrderState() {
+        if (cartProducts != null) {
+            cartProducts.clear();
+        }
+        totalPrice = 0;
+        MenuToppingGUI.resetStaticSelectedToppings();
+    }
+
+    private void styleHeaderLabel(JLabel header) {
+        header.setOpaque(true);
+        header.setBackground(tableHeaderBg);
+        header.setForeground(textPrimary);
+        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        header.setBorder(BorderFactory.createLineBorder(softBorder));
+    }
    void addCartProduct(cartProduct product) {   
     JLabel particular1 = new JLabel(product.getName(), JLabel.CENTER);
     JPanel toppingPanel = new JPanel(new GridLayout(0, 1));
@@ -430,7 +514,9 @@ public class ChiTietSanPhamGUI extends JFrame {
     String[] toppingArray = toppings.split("\n"); 
     for (String topping : toppingArray) {
         JLabel toppingLabel = new JLabel(topping, JLabel.CENTER);
-        toppingLabel.setBackground(Color.decode("#FEE0C3"));
+        toppingLabel.setBackground(cardBg);
+        toppingLabel.setForeground(textPrimary);
+        toppingLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         toppingLabel.setOpaque(true);
         toppingPanel.add(toppingLabel); 
          
@@ -439,7 +525,9 @@ public class ChiTietSanPhamGUI extends JFrame {
     JLabel particular3 = new JLabel(String.valueOf(product.getPrice()), JLabel.CENTER);
     JLabel particular4 = new JLabel(String.valueOf(product.getQuant()), JLabel.CENTER);
     
-    particular1.setBackground(Color.decode("#FEE0C3"));
+    particular1.setBackground(cardBg);
+    particular1.setForeground(textPrimary);
+    particular1.setFont(new Font("Segoe UI", Font.PLAIN, 12));
     particular1.setOpaque(true);
     particular1.addMouseListener(new MouseAdapter() {
     @Override
@@ -496,10 +584,15 @@ public class ChiTietSanPhamGUI extends JFrame {
     }
 });
 
-    particular3.setBackground(Color.decode("#FEE0C3"));
+    particular3.setBackground(cardBg);
+    particular3.setForeground(textPrimary);
+    particular3.setFont(new Font("Segoe UI", Font.PLAIN, 12));
     particular3.setOpaque(true);
-    particular4.setBackground(Color.decode("#FEE0C3"));
+    particular4.setBackground(cardBg);
+    particular4.setForeground(textPrimary);
+    particular4.setFont(new Font("Segoe UI", Font.PLAIN, 12));
     particular4.setOpaque(true);
+    toppingPanel.setBackground(cardBg);
    
     pnCartProduct.add(particular1);
     pnCartProduct.add(toppingPanel); 

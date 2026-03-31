@@ -120,7 +120,7 @@ public class Login extends JFrame{
         loginPanel.add(Box.createVerticalStrut(5));
         
         // Username text field
-        JTextField usernameField = new JTextField();
+        JTextField usernameField = new JTextField("admin");
         usernameField.setPreferredSize(new Dimension(300, 40));
         usernameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         usernameField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
@@ -135,6 +135,7 @@ public class Login extends JFrame{
         
         // Password label
         JLabel passLabel = new JLabel("Mật khẩu");
+
         passLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         passLabel.setForeground(TextPrimary);
         passLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -142,7 +143,7 @@ public class Login extends JFrame{
         loginPanel.add(Box.createVerticalStrut(5));
         
         // Password field
-        JPasswordField passwordField = new JPasswordField();
+        JPasswordField passwordField = new JPasswordField("123");
         passwordField.setPreferredSize(new Dimension(300, 40));
         passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 13));

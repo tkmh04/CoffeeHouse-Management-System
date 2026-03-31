@@ -12,6 +12,14 @@ public class NhanVienDAO {
 
     public NhanVienDAO() {
         conn = ConnectDataBaseDB.getConnection();
+        if (conn == null) {
+            try {
+                new ConnectDataBaseDB();
+                conn = ConnectDataBaseDB.getConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // Phương thức để thêm nhân viên vào cơ sở dữ liệu

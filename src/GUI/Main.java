@@ -11,7 +11,6 @@ package GUI;
 
 import GUI.Login;
 import BUS.TaiKhoanBUS;
-import DTO.TaiKhoanDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -57,15 +56,15 @@ public class Main extends JFrame{
     // Professional color scheme - Pink gradient
     Color MainColor = new Color(248, 248, 252);
     final Color TaskbarBg = new Color(255, 182, 193);  // Light pink
-    final Color TextPrimary = new Color(90, 90, 90);
-    final Color TextSecondary = new Color(160, 160, 160);
-    final Color PanelDefault = new Color(248, 248, 252);
-    final Color PanelHover = new Color(255, 160, 190);  // Pink on hover
-    final Color PanelClick = new Color(255, 105, 180);  // Hot pink when clicked
+    final Color TextPrimary = new Color(90, 52, 72);
+    final Color TextSecondary = new Color(120, 78, 100);
+    final Color PanelDefault = new Color(255, 244, 248);
+    final Color PanelHover = new Color(245, 170, 200);  // Pink on hover
+    final Color PanelClick = new Color(220, 92, 146);   // Active pink
 
     // Taskbar specific settings
     final int TASKBAR_WIDTH = 280;
-    final int MENU_ITEM_HEIGHT = 55;
+    final int MENU_ITEM_HEIGHT = 58;
     final int MENU_ITEM_WIDTH = 240;
 
     TaiKhoanBUS tkBUS = new TaiKhoanBUS();
@@ -202,7 +201,14 @@ public class Main extends JFrame{
         ListTaskbar = new ArrayList<>();
         
         // Add spacing before menu items
-        Taskbar.add(Box.createVerticalStrut(20));
+        Taskbar.add(Box.createVerticalStrut(16));
+
+        JLabel lbMenuTitle = new JLabel("DANH MUC CHUC NANG");
+        lbMenuTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lbMenuTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lbMenuTitle.setForeground(new Color(126, 73, 101));
+        lbMenuTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 12, 10));
+        Taskbar.add(lbMenuTitle);
         
         // Create mapping between function names and card names
         mapChucNangCard.put("menu", "1");
@@ -223,42 +229,16 @@ public class Main extends JFrame{
                 Image scaledImg = pic.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
                 ImageIcon scaledIcon = new ImageIcon(scaledImg);
                 
-                JLabel lb = new JLabel(danhSachChucNang.get(i), scaledIcon, JLabel.CENTER);
-                lb.setVerticalAlignment(JLabel.CENTER);
-                lb.setHorizontalAlignment(JLabel.CENTER);
-                lb.setHorizontalTextPosition(JLabel.CENTER);
-                lb.setVerticalTextPosition(JLabel.BOTTOM);
-                lb.setIconTextGap(5);
-                lb.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
-                lb.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
-                lb.setAlignmentX(Component.CENTER_ALIGNMENT);
-                lb.setOpaque(true);
-                lb.setForeground(TextSecondary);
-                lb.setBackground(PanelDefault);
-                lb.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-                lb.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-                lb.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                JLabel lb = createMenuItemLabel(danhSachChucNang.get(i), scaledIcon);
                 Taskbar.add(lb);
                 ListTaskbar.add(lb);
             } catch (Exception e) {
-                // Handle icon loading error
-                JLabel lb = new JLabel(danhSachChucNang.get(i), JLabel.CENTER);
-                lb.setVerticalAlignment(JLabel.CENTER);
-                lb.setHorizontalAlignment(JLabel.CENTER);
-                lb.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
-                lb.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
-                lb.setAlignmentX(Component.CENTER_ALIGNMENT);
-                lb.setOpaque(true);
-                lb.setForeground(TextSecondary);
-                lb.setBackground(PanelDefault);
-                lb.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
-                lb.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-                lb.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                JLabel lb = createMenuItemLabel(danhSachChucNang.get(i), null);
                 Taskbar.add(lb);
                 ListTaskbar.add(lb);
             }
         }
-        
+
         pnCard = new JPanel(cardMenu);
         pnNhanVien = new JPanel();
         pnKhachHang = new JPanel();
@@ -284,6 +264,13 @@ public class Main extends JFrame{
         pnCard.add(pnPhanQuyen,"9");
         pnCard.add(pnNhaCC,"10");
         pnCard.add(pnTaoPhieuNhap,"11");
+
+        if (!ListTaskbar.isEmpty()) {
+            JLabel defaultLabel = ListTaskbar.get(0);
+            setMenuItemActive(defaultLabel);
+            String cardName = mapChucNangCard.getOrDefault(normalizeMenuText(defaultLabel.getText()), "1");
+            cardMenu.show(pnCard, cardName);
+        }
 
         nhanVien = new NhanVien();
         pnNhanVien.setLayout(new BorderLayout());
@@ -407,6 +394,56 @@ public class Main extends JFrame{
         
         Mouse();
     }
+
+    private JLabel createMenuItemLabel(String text, Icon icon) {
+        JLabel lb = new JLabel(text, icon, JLabel.LEFT);
+        lb.setVerticalAlignment(JLabel.CENTER);
+        lb.setHorizontalAlignment(JLabel.LEFT);
+        lb.setHorizontalTextPosition(JLabel.RIGHT);
+        lb.setVerticalTextPosition(JLabel.CENTER);
+        lb.setIconTextGap(14);
+        lb.setPreferredSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+        lb.setMaximumSize(new Dimension(MENU_ITEM_WIDTH, MENU_ITEM_HEIGHT));
+        lb.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lb.setOpaque(true);
+        lb.setForeground(TextSecondary);
+        lb.setBackground(PanelDefault);
+        lb.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 4, 0, 0, PanelDefault),
+                BorderFactory.createEmptyBorder(0, 14, 0, 12)));
+        lb.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lb.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return lb;
+    }
+
+    private void setMenuItemDefault(JLabel lb) {
+        lb.setBackground(PanelDefault);
+        lb.setForeground(TextSecondary);
+        lb.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 4, 0, 0, PanelDefault),
+                BorderFactory.createEmptyBorder(0, 14, 0, 12)));
+    }
+
+    private void setMenuItemHover(JLabel lb) {
+        lb.setBackground(PanelHover);
+        lb.setForeground(Color.WHITE);
+        lb.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 4, 0, 0, new Color(255, 236, 245)),
+                BorderFactory.createEmptyBorder(0, 14, 0, 12)));
+    }
+
+    private void setMenuItemActive(JLabel lb) {
+        lb.setBackground(PanelClick);
+        lb.setForeground(Color.WHITE);
+        lb.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 4, 0, 0, Color.WHITE),
+                BorderFactory.createEmptyBorder(0, 14, 0, 12)));
+    }
+
+    private String normalizeMenuText(String text) {
+        return text == null ? "" : text.toLowerCase().trim();
+    }
+
     private void Mouse(){
         for (JLabel lb : ListTaskbar){
             lb.addMouseListener(new MouseListener() {
@@ -414,14 +451,11 @@ public class Main extends JFrame{
                 public void mouseClicked(MouseEvent e) {
                     // Reset all to default
                     for (JLabel lbDisable : ListTaskbar) {
-                        lbDisable.setBackground(PanelDefault);
-                        lbDisable.setForeground(TextSecondary);
+                        setMenuItemDefault(lbDisable);
                     }
-                    // Set clicked to active with smooth transition
-                    lb.setBackground(PanelClick);
-                    lb.setForeground(Color.WHITE);
+                    setMenuItemActive(lb);
                     
-                    String labelText = lb.getText().toLowerCase().trim();
+                    String labelText = normalizeMenuText(lb.getText());
                     String cardName = mapChucNangCard.getOrDefault(labelText, "1");
                     cardMenu.show(pnCard, cardName);
                 }
@@ -429,30 +463,28 @@ public class Main extends JFrame{
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (lb.getBackground().equals(PanelClick)) {
-                        lb.setBackground(new Color(240, 100, 170));
+                        lb.setBackground(new Color(195, 72, 126));
                     }
                 }
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    if (lb.getBackground().equals(new Color(240, 100, 170))) {
-                        lb.setBackground(PanelClick);
+                    if (lb.getBackground().equals(new Color(195, 72, 126))) {
+                        setMenuItemActive(lb);
                     }
                 }
 
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     if (lb.getBackground().equals(PanelDefault)) {
-                        lb.setBackground(PanelHover);
-                        lb.setForeground(Color.WHITE);
+                        setMenuItemHover(lb);
                     }
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     if (lb.getBackground().equals(PanelHover)) {
-                        lb.setBackground(PanelDefault);
-                        lb.setForeground(TextSecondary);
+                        setMenuItemDefault(lb);
                     }
                 }
             });

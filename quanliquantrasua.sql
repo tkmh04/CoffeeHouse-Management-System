@@ -32,7 +32,11 @@ CREATE TABLE `chitiethoadon` (
   `idSp` int(11) DEFAULT NULL,
   `idTopping` int(11) DEFAULT NULL,
   `quantity` float DEFAULT NULL,
-  `price` float DEFAULT NULL
+  `price` float DEFAULT NULL,
+  `productName` varchar(255) DEFAULT NULL,
+  `sizeSp` varchar(10) DEFAULT NULL,
+  `toppingsText` text DEFAULT NULL,
+  `lineTotal` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------

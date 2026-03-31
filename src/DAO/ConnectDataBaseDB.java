@@ -32,7 +32,13 @@ public class ConnectDataBaseDB {
 
     private void connect() throws SQLException {
         if (conn != null) {
-            return;
+            try {
+                if (!conn.isClosed()) {
+                    return;
+                }
+            } catch (SQLException ex) {
+                conn = null;
+            }
         }
         try {
             Class.forName(driver);
@@ -71,6 +77,13 @@ public class ConnectDataBaseDB {
     }
 
     public static Connection getConnection() {
+        try {
+            if (conn != null && conn.isClosed()) {
+                conn = null;
+            }
+        } catch (SQLException e) {
+            conn = null;
+        }
         return conn;
     }
    
